@@ -5,6 +5,7 @@
 #include <Adafruit_ImageReader.h> // Image-reading functions
 //#include <Fonts/FreeSans18pt7b.h> // Sans serif font
 #include <Fonts/FreeSans12pt7b.h> // Sans serif font
+#include <stdio.h>
 
 #define SD_CS     4 // SD card select pin
 #define TFT_CS    10 // TFT select pin
@@ -46,8 +47,8 @@ void setup() {
   tft.setRotation(3);
 
 //   Loading Screen
-  showInitScreen();
-  delay(2000);
+//  showInitScreen();
+//  delay(2000);
 
   // Prepare UI
   tft.fillScreen(BG_GREY);
@@ -67,20 +68,32 @@ void drawValues() {
   tft.setFont();
   tft.setTextSize(6);
 
-  // Channel 1
+// Channel 1
   tft.setTextColor(TXT_ORANGE,BG_GREY);
-  tft.setCursor(12,80);
-  tft.println(values[0]); //vv1
-  tft.setCursor(30,180);
-  tft.println(values[1]); //vi1
+  
+  tft.setCursor(12,90);
+  char buffer_vv1[4];
+  sprintf(buffer_vv1, "%4d", values[0]);
+  tft.println(buffer_vv1); //vv1
+  
+  tft.setCursor(12+36,180);
+  char buffer_vi1[4];
+  sprintf(buffer_vi1, "%2d", values[1]);
+  tft.println(buffer_vi1); //vi1
   
   // Channel 2
   tft.setTextColor(TXT_BLUE,BG_GREY);
-  tft.setCursor(160+12,80);
-  tft.println(values[2]); //vv2
-  tft.setCursor(160+30,180);
-  tft.println(values[3]); //vi2
   
+  tft.setCursor(160+12,90);
+  char buffer_vv2[4];
+  sprintf(buffer_vv2, "%4d", values[2]);
+  tft.println(buffer_vv2); //vv2
+  
+  tft.setCursor(160+36+12,180);
+  char buffer_vi2[4];
+  sprintf(buffer_vi2, "%2d", values[3]);
+  tft.println(buffer_vi2); //vi2
+ 
 }
 
 
@@ -97,15 +110,15 @@ void getNewValues(){
   vi2 = (r_vi2 * 5.0)/1024.0;
 
   // Calculate real voltages
-  vv1 = (vv1-2.5) * 4 / (r2/(r1+r2));
-  vi1 = (vi1-2.5) * 4 / (r2/(r1+r2));
-  vv2 = (vv2-2.5) * 4 / (r2/(r1+r2));
-  vi2 = (vi2-2.5) * 4 / (r2/(r1+r2));
+  vv1 = ((vv1-2.5) * 4 / (r2/(r1+r2))+13); //add offset of 13 V
+  vi1 = (vi1-2.5) * 20; // 10 V translate to 50 mA
+  vv2 = ((vv2-2.5) * 4 / (r2/(r1+r2))+13);
+  vi2 = (vi2-2.5) * 20;
   
   values[0] = vv1;
-  values[1] = abs(vi1);
+  values[1] = vi1;
   values[2] = vv2;
-  values[3] = abs(vi2);
+  values[3] = vi2;
   
 }
 
