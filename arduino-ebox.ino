@@ -47,8 +47,8 @@ void setup() {
   tft.setRotation(3);
 
 //   Loading Screen
-//  showInitScreen();
-//  delay(2000);
+  showInitScreen();
+  delay(2000);
 
   // Prepare UI
   tft.fillScreen(BG_GREY);
@@ -116,9 +116,9 @@ void getNewValues(){
   vi2 = (vi2-2.5) * 20;
   
   values[0] = vv1;
-  values[1] = vi1;
+  values[1] = abs(vi1);
   values[2] = vv2;
-  values[3] = vi2;
+  values[3] = abs(vi2);
   
 }
 
