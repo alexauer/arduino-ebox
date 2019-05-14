@@ -33,6 +33,11 @@ float r_vv2 = 0.0;
 float vi2 = 0.0;
 float r_vi2 = 0.0;
 
+char buffer_vv1[4];
+char buffer_vi1[4];
+char buffer_vv2[4];
+char buffer_vi2[4];
+
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 
@@ -72,12 +77,10 @@ void drawValues() {
   tft.setTextColor(TXT_ORANGE,BG_GREY);
   
   tft.setCursor(12,90);
-  char buffer_vv1[4];
   sprintf(buffer_vv1, "%4d", values[0]);
   tft.println(buffer_vv1); //vv1
   
   tft.setCursor(12+36,180);
-  char buffer_vi1[4];
   sprintf(buffer_vi1, "%2d", values[1]);
   tft.println(buffer_vi1); //vi1
   
@@ -85,12 +88,10 @@ void drawValues() {
   tft.setTextColor(TXT_BLUE,BG_GREY);
   
   tft.setCursor(160+12,90);
-  char buffer_vv2[4];
   sprintf(buffer_vv2, "%4d", values[2]);
   tft.println(buffer_vv2); //vv2
   
   tft.setCursor(160+36+12,180);
-  char buffer_vi2[4];
   sprintf(buffer_vi2, "%2d", values[3]);
   tft.println(buffer_vi2); //vi2
  
@@ -101,18 +102,18 @@ void getNewValues(){
 
   // Read in all values and convert it to voltages
   r_vv1 = analogRead(0);
-  vv1 = (r_vv1 * 5.0)/1024.0;
+  vv1 = (r_vv1 * 5.0)/1023.0;
   r_vi1 = analogRead(1);
-  vi1 = (r_vi1 * 5.0)/1024.0;
+  vi1 = (r_vi1 * 5.0)/1023.0;
   r_vv2 = analogRead(2);
-  vv2 = (r_vv2 * 5.0)/1024.0;
+  vv2 = (r_vv2 * 5.0)/1023.0;
   r_vi2 = analogRead(3);
-  vi2 = (r_vi2 * 5.0)/1024.0;
+  vi2 = (r_vi2 * 5.0)/1023.0;
 
   // Calculate real voltages
-  vv1 = ((vv1-2.5) * 4 / (r2/(r1+r2))+13); //add offset of 13 V
+  vv1 = ((vv1-2.5) * 4 / (r2/(r1+r2))); //add offset of 13 V
   vi1 = (vi1-2.5) * 20; // 10 V translate to 50 mA
-  vv2 = ((vv2-2.5) * 4 / (r2/(r1+r2))+13);
+  vv2 = ((vv2-2.5) * 4 / (r2/(r1+r2)));
   vi2 = (vi2-2.5) * 20;
   
   values[0] = vv1;
