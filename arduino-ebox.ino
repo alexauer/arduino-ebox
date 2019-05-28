@@ -23,6 +23,8 @@ int values[4] = {0,0,0,0}; // v1, i1, v2, i2
 
 float r1 = 1000.0; //kohms
 float r2 = 33.2; //kohms
+float v_ref = 4.96;
+float bits = 1023.0;
 
 float vv1 = 0.0;
 float r_vv1 = 0.0;
@@ -102,19 +104,23 @@ void getNewValues(){
 
   // Read in all values and convert it to voltages
   r_vv1 = analogRead(0);
-  vv1 = (r_vv1 * 5.0)/1023.0;
+  vv1 = (r_vv1 * v_ref)/bits;
   r_vi1 = analogRead(1);
-  vi1 = (r_vi1 * 5.0)/1023.0;
+  vi1 = (r_vi1 * v_ref)/bits;
   r_vv2 = analogRead(2);
-  vv2 = (r_vv2 * 5.0)/1023.0;
+  vv2 = (r_vv2 * v_ref)/bits;
   r_vi2 = analogRead(3);
-  vi2 = (r_vi2 * 5.0)/1023.0;
+  vi2 = (r_vi2 * v_ref)/bits;
 
   // Calculate real voltages
-  vv1 = ((vv1-2.5) * 4 / (r2/(r1+r2))); //add offset of 13 V
+  vv1 = ((vv1-2.5) * 4 / (r2/(r1+r2))); 
   vi1 = (vi1-2.5) * 20; // 10 V translate to 50 mA
   vv2 = ((vv2-2.5) * 4 / (r2/(r1+r2)));
   vi2 = (vi2-2.5) * 20;
+
+  // Calibrate voltages
+  vv1 = 9.0 + (vv1/1.03865); // Values from linear fit
+  vv2 = 9.0 + (vv2/1.03495); // Values from linear fit
   
   values[0] = vv1;
   values[1] = abs(vi1);
